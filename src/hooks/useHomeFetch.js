@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 // API
 import API from "../API";
 
+// Helpers
+import { isPersistedState } from "../helpers";
+
 const initialState = {
     page: 0,
     results: [],
@@ -10,18 +13,18 @@ const initialState = {
 };
 
 export const useHomeFetch = () => {
-    const [searchItem, setSearchItem] = useState("");
+    const [searchIerm, setSearchIerm] = useState("");
     const [state, setState] = useState(initialState);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-    const fetchMovies = async (page, searchItem = "") => {
+    const fetchMovies = async (page, searchIerm = "") => {
         try {
             setError(false);
             setLoading(true);
 
-            const movies = await API.fetchMovies(searchItem, page);
+            const movies = await API.fetchMovies(searchIerm, page);
             setState((prev) => ({
                 ...movies,
                 results:
@@ -35,32 +38,40 @@ export const useHomeFetch = () => {
         setLoading(false);
     };
 
-    // Initial render
+    // Search and inittial
     useEffect(() => {
-        setState();
-        fetchMovies(1);
-    }, []);
+        if (!searchIerm) {
+            const sessionState = isPersistedState("homeState");
 
-    // Search
-    useEffect(() => {
+            if (sessionState) {
+                setState(sessionState);
+                return;
+            }
+        }
         setState(initialState);
-        fetchMovies(1, searchItem);
-    }, [searchItem]);
+        fetchMovies(1, searchIerm);
+    }, [searchIerm]);
 
     // Load More
     useEffect(() => {
         if (!isLoadingMore) return;
 
-        fetchMovies(state.page + 1, searchItem);
+        fetchMovies(state.page + 1, searchIerm);
         setIsLoadingMore(false);
-    }, [isLoadingMore, searchItem]);
+    }, [isLoadingMore, searchIerm]);
+
+    // Write to sessionStorage
+    useEffect(() => {
+        if (!searchIerm)
+            sessionStorage.setItem("homeState", JSON.stringify(state));
+    }, [searchIerm, state]);
 
     return {
         state,
         loading,
         error,
-        searchItem,
-        setSearchItem,
+        searchIerm,
+        setSearchIerm,
         setIsLoadingMore,
     };
 };
