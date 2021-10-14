@@ -22,8 +22,8 @@ const Home = () => {
         state,
         loading,
         error,
-        searchItem,
-        setSearchItem,
+        searchIerm,
+        setSearchIerm,
         setIsLoadingMore,
     } = useHomeFetch();
 
@@ -33,15 +33,15 @@ const Home = () => {
 
     return (
         <div>
-            {!searchItem && state.results[0] ? (
+            {!searchIerm && state.results[0] ? (
                 <HeroImage
                     image={`${IMAGE_BASE_URL}${BACKDROP_SIZE}${state.results[0].backdrop_path}`}
                     title={state.results[0].original_title}
                     text={state.results[0].overview}
                 />
             ) : null}
-            <SearchBar setSearchItem={setSearchItem} />
-            <Grid header={searchItem ? "Search Result" : "Popular Movies"}>
+            <SearchBar setSearchIerm={setSearchIerm} />
+            <Grid header={searchIerm ? "Search Result" : "Popular Movies"}>
                 {state.results.map((movie) => (
                     <Thumb
                         key={movie.id}

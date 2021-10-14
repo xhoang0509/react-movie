@@ -6,7 +6,7 @@ import searchIcon from "../../images/search-icon.svg";
 // styles
 import { Wrapper, Content } from "./SearchBar.style";
 
-const SearchBar = ({ setSearchItem }) => {
+const SearchBar = ({ setSearchIerm }) => {
     const [state, setState] = useState("");
     const initial = useRef(true);
 
@@ -16,11 +16,11 @@ const SearchBar = ({ setSearchItem }) => {
             return;
         }
         const timer = setTimeout(() => {
-            setSearchItem(state);
+            setSearchIerm(state);
         }, 500);
 
         return () => clearTimeout(timer);
-    }, [setSearchItem, state]);
+    }, [setSearchIerm, state]);
 
     return (
         <Wrapper>
@@ -38,7 +38,7 @@ const SearchBar = ({ setSearchItem }) => {
 };
 
 SearchBar.propTypes = {
-    setSearchItem: PropTypes.func,
+    setSearchIerm: PropTypes.func,
 };
 
 export default SearchBar;
